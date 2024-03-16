@@ -31,8 +31,7 @@ public class Profile implements Serializable {
     public Profile() {
     }
 
-    public Profile(Long id, @NotNull @Size(min = 1, max = 30) String name, String avatarUrl, User user) {
-        this.id = id;
+    public Profile(@NotNull @Size(min = 1, max = 30) String name, String avatarUrl, User user) {
         this.name = name;
         this.avatarUrl = avatarUrl;
         this.user = user;

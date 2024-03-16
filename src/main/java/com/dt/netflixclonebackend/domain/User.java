@@ -45,10 +45,9 @@ public class User implements Serializable {
     public User() {
     }
 
-    public User(Long id, @NotNull @Size(max = 50) String username, @NotNull @Size(max = 50) String firstName,
+    public User(@NotNull @Size(max = 50) String username, @NotNull @Size(max = 50) String firstName,
             @NotNull @Size(max = 50) String lastName, @NotNull @Size(min = 5, max = 254) String email,
             @NotNull String password) {
-        this.id = id;
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -104,6 +103,14 @@ public class User implements Serializable {
         this.password = password;
     }
 
+    public List<Profile> getProfiles() {
+        return profiles;
+    }
+
+    public void setProfiles(List<Profile> profiles) {
+        this.profiles = profiles;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -114,6 +121,7 @@ public class User implements Serializable {
         result = prime * result + ((lastName == null) ? 0 : lastName.hashCode());
         result = prime * result + ((email == null) ? 0 : email.hashCode());
         result = prime * result + ((password == null) ? 0 : password.hashCode());
+        result = prime * result + ((profiles == null) ? 0 : profiles.hashCode());
         return result;
     }
 
@@ -156,13 +164,18 @@ public class User implements Serializable {
                 return false;
         } else if (!password.equals(other.password))
             return false;
+        if (profiles == null) {
+            if (other.profiles != null)
+                return false;
+        } else if (!profiles.equals(other.profiles))
+            return false;
         return true;
     }
 
     @Override
     public String toString() {
         return "User [id=" + id + ", username=" + username + ", firstName=" + firstName + ", lastName=" + lastName
-                + ", email=" + email + ", password=" + password + "]";
+                + ", email=" + email + ", password=" + password + ", profiles=" + profiles + "]";
     }
 
 }
