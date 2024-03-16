@@ -8,6 +8,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -35,20 +37,34 @@ public class Content implements Serializable {
     @OneToMany(mappedBy = "content")
     private List<Genre> genres;
 
+    @ManyToOne
+    @JoinColumn(name = "watchlist_id")
+    private Watchlist watchlist;
+
     public Content() {
     }
 
     public Content(@NotNull @Size(max = 50) String title, @NotNull String description, @NotNull LocalDate releaseDate,
-            @NotNull double duration, List<Genre> genres) {
+            @NotNull double duration, List<Genre> genres, Watchlist watchlist) {
         this.title = title;
         this.description = description;
         this.releaseDate = releaseDate;
         this.duration = duration;
         this.genres = genres;
+        this.watchlist = watchlist;
+    }
+
+    public Watchlist getWatchlist() {
+        return watchlist;
+    }
+
+    public void setWatchlist(Watchlist watchlist) {
+        this.watchlist = watchlist;
     }
 
     public Long getId() {
         return id;
+
     }
 
     public void setId(Long id) {
@@ -107,6 +123,7 @@ public class Content implements Serializable {
         temp = Double.doubleToLongBits(duration);
         result = prime * result + (int) (temp ^ (temp >>> 32));
         result = prime * result + ((genres == null) ? 0 : genres.hashCode());
+        result = prime * result + ((watchlist == null) ? 0 : watchlist.hashCode());
         return result;
     }
 
@@ -116,6 +133,7 @@ public class Content implements Serializable {
             return true;
         if (obj == null)
             return false;
+
         if (getClass() != obj.getClass())
             return false;
         Content other = (Content) obj;
@@ -146,13 +164,18 @@ public class Content implements Serializable {
                 return false;
         } else if (!genres.equals(other.genres))
             return false;
+        if (watchlist == null) {
+            if (other.watchlist != null)
+                return false;
+        } else if (!watchlist.equals(other.watchlist))
+            return false;
         return true;
     }
 
     @Override
     public String toString() {
         return "Content [id=" + id + ", title=" + title + ", description=" + description + ", releaseDate="
-                + releaseDate + ", duration=" + duration + ", genres=" + genres + "]";
+                + releaseDate + ", duration=" + duration + ", genres=" + genres + ", watchlist=" + watchlist + "]";
     }
 
 }

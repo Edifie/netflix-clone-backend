@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
@@ -28,13 +29,26 @@ public class Profile implements Serializable {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @OneToOne
+    @JoinColumn(name = "watchlist_id")
+    private Watchlist watchlist;
+
     public Profile() {
     }
 
-    public Profile(@NotNull @Size(min = 1, max = 30) String name, String avatarUrl, User user) {
+    public Profile(@NotNull @Size(min = 1, max = 30) String name, String avatarUrl, User user, Watchlist watchlist) {
         this.name = name;
         this.avatarUrl = avatarUrl;
         this.user = user;
+        this.watchlist = watchlist;
+    }
+
+    public Watchlist getWatchlist() {
+        return watchlist;
+    }
+
+    public void setWatchlist(Watchlist watchlist) {
+        this.watchlist = watchlist;
     }
 
     public Long getId() {
@@ -77,6 +91,7 @@ public class Profile implements Serializable {
         result = prime * result + ((name == null) ? 0 : name.hashCode());
         result = prime * result + ((avatarUrl == null) ? 0 : avatarUrl.hashCode());
         result = prime * result + ((user == null) ? 0 : user.hashCode());
+        result = prime * result + ((watchlist == null) ? 0 : watchlist.hashCode());
         return result;
     }
 
@@ -109,12 +124,18 @@ public class Profile implements Serializable {
                 return false;
         } else if (!user.equals(other.user))
             return false;
+        if (watchlist == null) {
+            if (other.watchlist != null)
+                return false;
+        } else if (!watchlist.equals(other.watchlist))
+            return false;
         return true;
     }
 
     @Override
     public String toString() {
-        return "Profile [id=" + id + ", name=" + name + ", avatarUrl=" + avatarUrl + ", user=" + user + "]";
+        return "Profile [id=" + id + ", name=" + name + ", avatarUrl=" + avatarUrl + ", user=" + user + ", watchlist="
+                + watchlist + "]";
     }
 
 }
