@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.dt.netflixclonebackend.domain.enums.ContentType;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -26,6 +28,9 @@ public class Content implements Serializable {
     private String title;
 
     @NotNull
+    private ContentType contentType;
+
+    @NotNull
     private String description;
 
     @NotNull
@@ -44,9 +49,10 @@ public class Content implements Serializable {
     public Content() {
     }
 
-    public Content(@NotNull @Size(max = 50) String title, @NotNull String description, @NotNull LocalDate releaseDate,
-            @NotNull double duration, List<Genre> genres, Watchlist watchlist) {
+    public Content(@NotNull @Size(max = 50) String title, @NotNull ContentType contentType, @NotNull String description,
+            @NotNull LocalDate releaseDate, @NotNull double duration, List<Genre> genres, Watchlist watchlist) {
         this.title = title;
+        this.contentType = contentType;
         this.description = description;
         this.releaseDate = releaseDate;
         this.duration = duration;
@@ -77,6 +83,14 @@ public class Content implements Serializable {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public ContentType getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(ContentType contentType) {
+        this.contentType = contentType;
     }
 
     public String getDescription() {
@@ -117,6 +131,7 @@ public class Content implements Serializable {
         int result = 1;
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         result = prime * result + ((title == null) ? 0 : title.hashCode());
+        result = prime * result + ((contentType == null) ? 0 : contentType.hashCode());
         result = prime * result + ((description == null) ? 0 : description.hashCode());
         result = prime * result + ((releaseDate == null) ? 0 : releaseDate.hashCode());
         long temp;
@@ -133,7 +148,6 @@ public class Content implements Serializable {
             return true;
         if (obj == null)
             return false;
-
         if (getClass() != obj.getClass())
             return false;
         Content other = (Content) obj;
@@ -146,6 +160,8 @@ public class Content implements Serializable {
             if (other.title != null)
                 return false;
         } else if (!title.equals(other.title))
+            return false;
+        if (contentType != other.contentType)
             return false;
         if (description == null) {
             if (other.description != null)
@@ -174,8 +190,9 @@ public class Content implements Serializable {
 
     @Override
     public String toString() {
-        return "Content [id=" + id + ", title=" + title + ", description=" + description + ", releaseDate="
-                + releaseDate + ", duration=" + duration + ", genres=" + genres + ", watchlist=" + watchlist + "]";
+        return "Content [id=" + id + ", title=" + title + ", contentType=" + contentType + ", description="
+                + description + ", releaseDate=" + releaseDate + ", duration=" + duration + ", genres=" + genres
+                + ", watchlist=" + watchlist + "]";
     }
 
 }
