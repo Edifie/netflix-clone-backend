@@ -7,6 +7,8 @@ import java.util.List;
 import com.dt.netflixclonebackend.domain.enums.ContentType;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -28,6 +30,7 @@ public class Content implements Serializable {
     private String title;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     private ContentType contentType;
 
     @NotNull
@@ -36,7 +39,6 @@ public class Content implements Serializable {
     @NotNull
     private LocalDate releaseDate;
 
-    @NotNull
     private double duration;
 
     @OneToMany(mappedBy = "content")
