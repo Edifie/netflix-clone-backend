@@ -17,6 +17,10 @@
 	<properties>
 		<java.version>17</java.version>
 		<org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
+		<liquibase.url>${env.NETFLIX_CLONE_DATASOURCE_URL}</liquibase.url>
+		<liquibase.username>${env.DATASOURCE_USERNAME}</liquibase.username>
+		<liquibase.password>${env.DATASOURCE_PASSWORD}</liquibase.password>
+		<liquibase.changeLogFile>src/main/resources/config/liquibase/changelog.xml</liquibase.changeLogFile>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -51,6 +55,16 @@
 			<groupId>org.mapstruct</groupId>
 			<artifactId>mapstruct</artifactId>
 			<version>${org.mapstruct.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.liquibase</groupId>
+			<artifactId>liquibase-core</artifactId>
+			<version>4.24.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.liquibase</groupId>
+			<artifactId>liquibase-maven-plugin</artifactId>
+			<version>4.24.0</version>
 		</dependency>
 	</dependencies>
 
