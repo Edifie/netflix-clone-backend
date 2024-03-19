@@ -76,10 +76,28 @@ public class TMDBService {
                             movieDTO.setRelease_date(LocalDate.parse(result.get("release_date").asText()));
 
                             List<Long> genreIds = new ArrayList<>();
-                            for (JsonNode genreId : result.get("genre_ids")) {
-                                genreIds.add(genreId.asLong());
+                            for (JsonNode genreIdNode : result.get("genre_ids")) {
+                                genreIds.add(genreIdNode.asLong());
                             }
-                            movieDTO.setGenre_ids(genreIds);
+
+                            List<GenreDTO> genresDTOs = new ArrayList<>();
+                            for (Long genreId : genreIds) {
+                                Genre existingGenre = genreRepository.findByCode(genreId);
+                                GenreDTO existingGenreDTO = genreMapper.entityToDto(existingGenre);
+
+                                if (existingGenre != null) {
+                                    genresDTOs.add(existingGenreDTO);
+
+                                } else {
+                                    Genre newGenre = new Genre();
+                                    newGenre.setCode(genreId);
+                                    genreRepository.save(newGenre);
+
+                                    GenreDTO newGenreDTO = genreMapper.entityToDto(newGenre);
+                                    genresDTOs.add(newGenreDTO);
+                                }
+                            }
+                            movieDTO.setGenreDTOs(genresDTOs);
 
                             resultDTOs.add(movieDTO);
                         }
@@ -124,7 +142,7 @@ public class TMDBService {
 
                         for (JsonNode result : resultsNode) {
                             GenreDTO genreDTO = new GenreDTO();
-                            genreDTO.setId(result.get("id").asLong());
+                            genreDTO.setCode(result.get("id").asLong());
                             genreDTO.setName(result.get("name").asText());
 
                             resultDTOs.add(genreDTO);

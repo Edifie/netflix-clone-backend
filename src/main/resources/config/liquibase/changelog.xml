@@ -8,17 +8,4 @@
                         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
                         http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
 
-
-    <changeSet author="dt-1" id="18-03-2024-1">
-        <modifyDataType
-            columnName="description"
-            newDataType="longtext"
-            tableName="content" />
-    </changeSet>
-    <changeSet author="dt-2" id="18-03-2024-2">
-        <modifyDataType
-            columnName="content_type"
-            newDataType="varchar(50)"
-            tableName="content" />
-    </changeSet>
 </databaseChangeLog>

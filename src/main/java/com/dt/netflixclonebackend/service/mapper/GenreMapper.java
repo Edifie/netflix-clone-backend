@@ -14,5 +14,11 @@ public interface GenreMapper {
 
     @Mapping(target = "id", source = "genreDTO.id")
     @Mapping(target = "name", source = "genreDTO.name")
+    @Mapping(target = "code", source = "genreDTO.code")
     Genre dtoToEntity(GenreDTO genreDTO);
+
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "name", source = "name")
+    @Mapping(target = "code", source = "code")
+    GenreDTO entityToDto(Genre genre);
 }

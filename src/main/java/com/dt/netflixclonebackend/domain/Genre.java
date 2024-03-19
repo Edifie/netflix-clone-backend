@@ -1,13 +1,14 @@
 package com.dt.netflixclonebackend.domain;
 
 import java.io.Serializable;
+import java.util.List;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.ManyToMany;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
@@ -20,15 +21,19 @@ public class Genre implements Serializable {
     @NotNull
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "content_id")
-    private Content content;
+    @NotNull
+    @Column(unique = true)
+    private Long code;
+
+    @ManyToMany(mappedBy = "genres")
+    private List<Content> contents;
 
     public Genre() {
     }
 
-    public Genre(@NotNull String name) {
+    public Genre(@NotNull String name, @NotNull Long code) {
         this.name = name;
+        this.code = code;
     }
 
     public Long getId() {
@@ -47,12 +52,20 @@ public class Genre implements Serializable {
         this.name = name;
     }
 
-    public Content getContent() {
-        return content;
+    public Long getCode() {
+        return code;
     }
 
-    public void setContent(Content content) {
-        this.content = content;
+    public void setCode(Long code) {
+        this.code = code;
+    }
+
+    public List<Content> getContents() {
+        return contents;
+    }
+
+    public void setContents(List<Content> contents) {
+        this.contents = contents;
     }
 
     @Override
@@ -61,7 +74,8 @@ public class Genre implements Serializable {
         int result = 1;
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         result = prime * result + ((name == null) ? 0 : name.hashCode());
-        result = prime * result + ((content == null) ? 0 : content.hashCode());
+        result = prime * result + ((code == null) ? 0 : code.hashCode());
+        result = prime * result + ((contents == null) ? 0 : contents.hashCode());
         return result;
     }
 
@@ -84,17 +98,22 @@ public class Genre implements Serializable {
                 return false;
         } else if (!name.equals(other.name))
             return false;
-        if (content == null) {
-            if (other.content != null)
+        if (code == null) {
+            if (other.code != null)
                 return false;
-        } else if (!content.equals(other.content))
+        } else if (!code.equals(other.code))
+            return false;
+        if (contents == null) {
+            if (other.contents != null)
+                return false;
+        } else if (!contents.equals(other.contents))
             return false;
         return true;
     }
 
     @Override
     public String toString() {
-        return "Genre [id=" + id + ", name=" + name + ", content=" + content + "]";
+        return "Genre [id=" + id + ", name=" + name + ", code=" + code + ", contents=" + contents + "]";
     }
 
 }

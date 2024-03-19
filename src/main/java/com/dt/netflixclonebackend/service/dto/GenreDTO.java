@@ -4,12 +4,14 @@ public class GenreDTO {
 
     private Long id;
     private String name;
+    private Long code;
 
     public GenreDTO() {
     }
 
-    public GenreDTO(Long id, String name) {
+    public GenreDTO(Long id, String name, Long code) {
         this.id = id;
+        this.code = code;
         this.name = name;
     }
 
@@ -29,12 +31,21 @@ public class GenreDTO {
         this.name = name;
     }
 
+    public Long getCode() {
+        return code;
+    }
+
+    public void setCode(Long code) {
+        this.code = code;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((code == null) ? 0 : code.hashCode());
         return result;
     }
 
@@ -57,12 +68,17 @@ public class GenreDTO {
                 return false;
         } else if (!name.equals(other.name))
             return false;
+        if (code == null) {
+            if (other.code != null)
+                return false;
+        } else if (!code.equals(other.code))
+            return false;
         return true;
     }
 
     @Override
     public String toString() {
-        return "GenreDTO [id=" + id + ", name=" + name + "]";
+        return "GenreDTO [id=" + id + ", name=" + name + ", code=" + code + "]";
     }
 
 }

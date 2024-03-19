@@ -8,16 +8,9 @@ public class ContentMovieDTO {
     private String title;
     private String overview;
     private LocalDate release_date;
-    private List<Long> genre_ids;
+    private List<GenreDTO> genreDTOs;
 
     public ContentMovieDTO() {
-    }
-
-    public ContentMovieDTO(String title, String overview, LocalDate release_date, List<Long> genre_ids) {
-        this.title = title;
-        this.overview = overview;
-        this.release_date = release_date;
-        this.genre_ids = genre_ids;
     }
 
     public String getTitle() {
@@ -44,12 +37,12 @@ public class ContentMovieDTO {
         this.release_date = release_date;
     }
 
-    public List<Long> getGenre_ids() {
-        return genre_ids;
+    public List<GenreDTO> getGenreDTOs() {
+        return genreDTOs;
     }
 
-    public void setGenre_ids(List<Long> genre_ids) {
-        this.genre_ids = genre_ids;
+    public void setGenreDTOs(List<GenreDTO> genreDTOs) {
+        this.genreDTOs = genreDTOs;
     }
 
     @Override
@@ -59,7 +52,7 @@ public class ContentMovieDTO {
         result = prime * result + ((title == null) ? 0 : title.hashCode());
         result = prime * result + ((overview == null) ? 0 : overview.hashCode());
         result = prime * result + ((release_date == null) ? 0 : release_date.hashCode());
-        result = prime * result + ((genre_ids == null) ? 0 : genre_ids.hashCode());
+        result = prime * result + ((genreDTOs == null) ? 0 : genreDTOs.hashCode());
         return result;
     }
 
@@ -87,10 +80,10 @@ public class ContentMovieDTO {
                 return false;
         } else if (!release_date.equals(other.release_date))
             return false;
-        if (genre_ids == null) {
-            if (other.genre_ids != null)
+        if (genreDTOs == null) {
+            if (other.genreDTOs != null)
                 return false;
-        } else if (!genre_ids.equals(other.genre_ids))
+        } else if (!genreDTOs.equals(other.genreDTOs))
             return false;
         return true;
     }
@@ -98,7 +91,7 @@ public class ContentMovieDTO {
     @Override
     public String toString() {
         return "ContentMovieDTO [title=" + title + ", overview=" + overview + ", release_date=" + release_date
-                + ", genre_ids=" + genre_ids + "]";
+                + ", genreDTOs=" + genreDTOs + "]";
     }
 
 }
