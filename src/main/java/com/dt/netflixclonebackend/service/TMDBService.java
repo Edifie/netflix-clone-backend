@@ -12,10 +12,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.dt.netflixclonebackend.domain.Content;
+import com.dt.netflixclonebackend.domain.Genre;
 import com.dt.netflixclonebackend.domain.enums.ContentType;
 import com.dt.netflixclonebackend.repository.ContentRepository;
+import com.dt.netflixclonebackend.repository.GenreRepository;
 import com.dt.netflixclonebackend.service.dto.ContentMovieDTO;
+import com.dt.netflixclonebackend.service.dto.GenreDTO;
 import com.dt.netflixclonebackend.service.mapper.ContentMapper;
+import com.dt.netflixclonebackend.service.mapper.GenreMapper;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -26,18 +30,24 @@ public class TMDBService {
 
     private final Logger log = LoggerFactory.getLogger(TMDBService.class);
     private final WebClient webClient;
+
     private final ContentMapper contentMapper;
+    private final GenreMapper genreMapper;
+
     private final ContentRepository contentRepository;
+    private final GenreRepository genreRepository;
 
     @Value("${tmdb.api.key}")
     String accessTokenAuth;
 
     public TMDBService(WebClient.Builder webClientBuilder, ContentMapper contentMapper,
-            ContentRepository contentRepository) {
+            ContentRepository contentRepository, GenreMapper genreMapper, GenreRepository genreRepository) {
         this.webClient = webClientBuilder.baseUrl("https://api.themoviedb.org/3")
                 .build();
         this.contentMapper = contentMapper;
         this.contentRepository = contentRepository;
+        this.genreMapper = genreMapper;
+        this.genreRepository = genreRepository;
     }
 
     public void getPopulerMoviesFromTMDBAndSave() {
@@ -92,5 +102,49 @@ public class TMDBService {
             contentRepository.saveAll(movies);
         }
 
+    }
+
+    public void getGenresFromTMDBAndSave() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(accessTokenAuth);
+
+        String url = "/genre/movie/list?language=en";
+        List<GenreDTO> genreDTOs = webClient.get()
+                .uri(url)
+                .headers(httpHeaders -> httpHeaders.addAll(headers))
+                .retrieve()
+                .bodyToFlux(String.class)
+                .flatMap(response -> {
+                    try {
+                        ObjectMapper objectMapper = new ObjectMapper();
+                        JsonNode jsonNode = objectMapper.readTree(response);
+                        JsonNode resultsNode = jsonNode.get("genres");
+
+                        List<GenreDTO> resultDTOs = new ArrayList<>();
+
+                        for (JsonNode result : resultsNode) {
+                            GenreDTO genreDTO = new GenreDTO();
+                            genreDTO.setId(result.get("id").asLong());
+                            genreDTO.setName(result.get("name").asText());
+
+                            resultDTOs.add(genreDTO);
+                        }
+                        return Flux.fromIterable(resultDTOs);
+                    } catch (Exception e) {
+                        return Flux.error(e);
+                    }
+                })
+                .collectList()
+                .block();
+
+        if (genreDTOs != null) {
+            List<Genre> genres = new ArrayList<>();
+            for (GenreDTO genreDTO : genreDTOs) {
+                Genre genre = genreMapper.dtoToEntity(genreDTO);
+                genres.add(genre);
+            }
+
+            genreRepository.saveAll(genres);
+        }
     }
 }
