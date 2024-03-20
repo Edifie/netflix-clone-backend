@@ -50,21 +50,22 @@ public class TMDBService {
         this.genreRepository = genreRepository;
     }
 
-    public void getPopulerMoviesFromTMDBAndSave() {
+    public void getMoviesFromTMDBAndSave(String endpoint) {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(accessTokenAuth);
 
-        String url = "/movie/top_rated?language=en-US&page=1";
+        ObjectMapper objectMapper = new ObjectMapper();
 
         List<ContentMovieDTO> movieDTOs = webClient.get()
-                .uri(url)
+                .uri(endpoint)
                 .headers(httpHeaders -> httpHeaders.addAll(headers))
                 .retrieve()
                 .bodyToFlux(String.class)
                 .flatMap(response -> {
                     try {
-                        ObjectMapper objectMapper = new ObjectMapper();
                         JsonNode jsonNode = objectMapper.readTree(response);
+                        List<JsonNode> nodes = new ArrayList<JsonNode>();
+                        nodes.add(jsonNode);
                         JsonNode resultsNode = jsonNode.get("results");
 
                         List<ContentMovieDTO> resultDTOs = new ArrayList<>();
@@ -112,14 +113,17 @@ public class TMDBService {
         if (movieDTOs != null) {
             List<Content> movies = new ArrayList<>();
             for (ContentMovieDTO movieDTO : movieDTOs) {
-                Content content = contentMapper.movieDtoToContent(movieDTO);
-                content.setContentType(ContentType.MOVIE);
-                movies.add(content);
+                Content existingMovie = contentRepository.findByReleaseDateAndTitle(movieDTO.getRelease_date(),
+                        movieDTO.getTitle());
+                if (existingMovie == null) {
+                    Content content = contentMapper.movieDtoToContent(movieDTO);
+                    content.setContentType(ContentType.MOVIE);
+                    movies.add(content);
+                }
             }
 
             contentRepository.saveAll(movies);
         }
-
     }
 
     public void getGenresFromTMDBAndSave() {

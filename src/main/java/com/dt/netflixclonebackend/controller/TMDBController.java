@@ -23,8 +23,10 @@ public class TMDBController {
 
     @GetMapping("movie/all")
     public ResponseEntity<?> getFetchedMoviesFromTMDB() {
-        tmdbService.getPopulerMoviesFromTMDBAndSave();
-
+        for (int i = 1; i <= 25; i++) {
+            tmdbService.getMoviesFromTMDBAndSave("/movie/popular?language=en-US&page=" + i);
+            tmdbService.getMoviesFromTMDBAndSave("/movie/top_rated?language=en-US&page=" + i);
+        }
         return ResponseEntity.status(HttpStatus.OK).body("Movies fetched and saved successfully");
     }
 
