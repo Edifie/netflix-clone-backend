@@ -3,23 +3,14 @@ package com.dt.netflixclonebackend.service.dto;
 import java.time.LocalDate;
 import java.util.List;
 
-public class ContentMovieDTO {
+public class TMDBMovieDTO {
 
-    private Long id;
     private String title;
-    private String description;
-    private LocalDate releaseDate;
+    private String overview;
+    private LocalDate release_date;
     private List<GenreDTO> genreDTOs;
 
-    public ContentMovieDTO() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public TMDBMovieDTO() {
     }
 
     public String getTitle() {
@@ -30,20 +21,20 @@ public class ContentMovieDTO {
         this.title = title;
     }
 
-    public String getDescription() {
-        return description;
+    public String getOverview() {
+        return overview;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setOverview(String overview) {
+        this.overview = overview;
     }
 
-    public LocalDate getReleaseDate() {
-        return releaseDate;
+    public LocalDate getRelease_date() {
+        return release_date;
     }
 
-    public void setReleaseDate(LocalDate releaseDate) {
-        this.releaseDate = releaseDate;
+    public void setRelease_date(LocalDate release_date) {
+        this.release_date = release_date;
     }
 
     public List<GenreDTO> getGenreDTOs() {
@@ -58,10 +49,9 @@ public class ContentMovieDTO {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
         result = prime * result + ((title == null) ? 0 : title.hashCode());
-        result = prime * result + ((description == null) ? 0 : description.hashCode());
-        result = prime * result + ((releaseDate == null) ? 0 : releaseDate.hashCode());
+        result = prime * result + ((overview == null) ? 0 : overview.hashCode());
+        result = prime * result + ((release_date == null) ? 0 : release_date.hashCode());
         result = prime * result + ((genreDTOs == null) ? 0 : genreDTOs.hashCode());
         return result;
     }
@@ -74,26 +64,21 @@ public class ContentMovieDTO {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        ContentMovieDTO other = (ContentMovieDTO) obj;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
+        TMDBMovieDTO other = (TMDBMovieDTO) obj;
         if (title == null) {
             if (other.title != null)
                 return false;
         } else if (!title.equals(other.title))
             return false;
-        if (description == null) {
-            if (other.description != null)
+        if (overview == null) {
+            if (other.overview != null)
                 return false;
-        } else if (!description.equals(other.description))
+        } else if (!overview.equals(other.overview))
             return false;
-        if (releaseDate == null) {
-            if (other.releaseDate != null)
+        if (release_date == null) {
+            if (other.release_date != null)
                 return false;
-        } else if (!releaseDate.equals(other.releaseDate))
+        } else if (!release_date.equals(other.release_date))
             return false;
         if (genreDTOs == null) {
             if (other.genreDTOs != null)
@@ -105,8 +90,8 @@ public class ContentMovieDTO {
 
     @Override
     public String toString() {
-        return "ContentMovieDTO [id=" + id + ", title=" + title + ", description=" + description + ", releaseDate="
-                + releaseDate + ", genreDTOs=" + genreDTOs + "]";
+        return "TMDBMovieDTO [title=" + title + ", overview=" + overview + ", release_date=" + release_date
+                + ", genreDTOs=" + genreDTOs + "]";
     }
 
 }

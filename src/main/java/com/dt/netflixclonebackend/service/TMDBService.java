@@ -16,8 +16,8 @@ import com.dt.netflixclonebackend.domain.Genre;
 import com.dt.netflixclonebackend.domain.enums.ContentType;
 import com.dt.netflixclonebackend.repository.ContentRepository;
 import com.dt.netflixclonebackend.repository.GenreRepository;
-import com.dt.netflixclonebackend.service.dto.ContentMovieDTO;
 import com.dt.netflixclonebackend.service.dto.GenreDTO;
+import com.dt.netflixclonebackend.service.dto.TMDBMovieDTO;
 import com.dt.netflixclonebackend.service.mapper.ContentMapper;
 import com.dt.netflixclonebackend.service.mapper.GenreMapper;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -104,7 +104,7 @@ public class TMDBService {
     }
 
     public void extractMoviesAndSave(List<JsonNode> allResults) {
-        List<ContentMovieDTO> movieDTOs = new ArrayList<>();
+        List<TMDBMovieDTO> movieDTOs = new ArrayList<>();
 
         for (JsonNode result : allResults) {
             if (result.isArray()) {
@@ -121,7 +121,7 @@ public class TMDBService {
                                     movieDTO.getRelease_date().equals(releaseDate));
 
                     if (!movieExists) {
-                        ContentMovieDTO movieDTO = new ContentMovieDTO();
+                        TMDBMovieDTO movieDTO = new TMDBMovieDTO();
                         movieDTO.setTitle(title);
                         movieDTO.setOverview(movieNode.get("overview").asText());
                         movieDTO.setRelease_date(releaseDate);
@@ -156,7 +156,7 @@ public class TMDBService {
 
         if (!movieDTOs.isEmpty()) {
             List<Content> movies = new ArrayList<>();
-            for (ContentMovieDTO movieDTO : movieDTOs) {
+            for (TMDBMovieDTO movieDTO : movieDTOs) {
                 // Check existing movie before adding
                 Content existingMovie = contentRepository.findByReleaseDateAndTitle(movieDTO.getRelease_date(),
                         movieDTO.getTitle());
