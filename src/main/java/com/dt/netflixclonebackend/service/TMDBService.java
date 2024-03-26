@@ -22,8 +22,10 @@ import com.dt.netflixclonebackend.service.mapper.ContentMapper;
 import com.dt.netflixclonebackend.service.mapper.GenreMapper;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Service
 public class TMDBService {
@@ -50,69 +52,112 @@ public class TMDBService {
         this.genreRepository = genreRepository;
     }
 
-    public void getMoviesFromTMDBAndSave(String endpoint) {
+    public Mono<List<JsonNode>> getMoviesFromTMDB(String endpoint) {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(accessTokenAuth);
 
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        List<ContentMovieDTO> movieDTOs = webClient.get()
+        return webClient.get()
                 .uri(endpoint)
                 .headers(httpHeaders -> httpHeaders.addAll(headers))
                 .retrieve()
                 .bodyToFlux(String.class)
                 .flatMap(response -> {
                     try {
+                        ObjectMapper objectMapper = new ObjectMapper();
                         JsonNode jsonNode = objectMapper.readTree(response);
-                        List<JsonNode> nodes = new ArrayList<JsonNode>();
-                        nodes.add(jsonNode);
                         JsonNode resultsNode = jsonNode.get("results");
-
-                        List<ContentMovieDTO> resultDTOs = new ArrayList<>();
-
-                        for (JsonNode result : resultsNode) {
-                            ContentMovieDTO movieDTO = new ContentMovieDTO();
-                            movieDTO.setTitle(result.get("title").asText());
-                            movieDTO.setOverview(result.get("overview").asText());
-                            movieDTO.setRelease_date(LocalDate.parse(result.get("release_date").asText()));
-
-                            List<Long> genreIds = new ArrayList<>();
-                            for (JsonNode genreIdNode : result.get("genre_ids")) {
-                                genreIds.add(genreIdNode.asLong());
-                            }
-
-                            List<GenreDTO> genresDTOs = new ArrayList<>();
-                            for (Long genreId : genreIds) {
-                                Genre existingGenre = genreRepository.findByCode(genreId);
-                                GenreDTO existingGenreDTO = genreMapper.entityToDto(existingGenre);
-
-                                if (existingGenre != null) {
-                                    genresDTOs.add(existingGenreDTO);
-
-                                } else {
-                                    Genre newGenre = new Genre();
-                                    newGenre.setCode(genreId);
-                                    genreRepository.save(newGenre);
-
-                                    GenreDTO newGenreDTO = genreMapper.entityToDto(newGenre);
-                                    genresDTOs.add(newGenreDTO);
-                                }
-                            }
-                            movieDTO.setGenreDTOs(genresDTOs);
-
-                            resultDTOs.add(movieDTO);
-                        }
-                        return Flux.fromIterable(resultDTOs);
+                        return Flux.just(resultsNode);
                     } catch (Exception e) {
                         return Flux.error(e);
                     }
                 })
-                .collectList()
-                .block();
+                .collectList();
+    }
 
-        if (movieDTOs != null) {
+    public Mono<List<JsonNode>> getAllMovies() {
+        List<String> allEndpoints = generateEndpoints();
+
+        return Flux.fromIterable(allEndpoints)
+                .flatMap(this::getMoviesFromTMDB)
+                .flatMapIterable(list -> list)
+                .collectList();
+    }
+
+    public List<String> generateEndpoints() {
+        List<String> allEndpoints = new ArrayList<>();
+        String[] baseEndpoints = { "/movie/popular?language=en-US", "/movie/top_rated?language=en-US" };
+
+        for (String baseEndpoint : baseEndpoints) {
+            for (int page = 1; page <= 20; page++) {
+                String endpoint = baseEndpoint + "&page=" + page;
+                allEndpoints.add(endpoint);
+            }
+        }
+
+        return allEndpoints;
+    }
+
+    public Mono<Void> getMoviesFromTMDBAndSave() {
+        return getAllMovies()
+                .doOnNext(allResults -> extractMoviesAndSave(allResults))
+                .then();
+    }
+
+    public void extractMoviesAndSave(List<JsonNode> allResults) {
+        List<ContentMovieDTO> movieDTOs = new ArrayList<>();
+
+        for (JsonNode result : allResults) {
+            if (result.isArray()) {
+                ArrayNode arrayNode = (ArrayNode) result;
+                for (JsonNode movieNode : arrayNode) {
+                    String title = movieNode.get("title").asText();
+                    String releaseDateText = movieNode.get("release_date").asText();
+                    LocalDate releaseDate = LocalDate.parse(releaseDateText);
+
+                    // Check if the movie already exists in movieDTOs to avoid duplicates in the
+                    // JSON response
+                    boolean movieExists = movieDTOs.stream()
+                            .anyMatch(movieDTO -> movieDTO.getTitle().equals(title) &&
+                                    movieDTO.getRelease_date().equals(releaseDate));
+
+                    if (!movieExists) {
+                        ContentMovieDTO movieDTO = new ContentMovieDTO();
+                        movieDTO.setTitle(title);
+                        movieDTO.setOverview(movieNode.get("overview").asText());
+                        movieDTO.setRelease_date(releaseDate);
+
+                        // Set genre DTOs
+                        List<Long> genreIds = new ArrayList<>();
+                        for (JsonNode genreIdNode : movieNode.get("genre_ids")) {
+                            genreIds.add(genreIdNode.asLong());
+                        }
+                        List<GenreDTO> genresDTOs = new ArrayList<>();
+                        for (Long genreId : genreIds) {
+                            Genre existingGenre = genreRepository.findByCode(genreId);
+                            GenreDTO existingGenreDTO = genreMapper.entityToDto(existingGenre);
+
+                            if (existingGenre != null) {
+                                genresDTOs.add(existingGenreDTO);
+                            } else {
+                                Genre newGenre = new Genre();
+                                newGenre.setCode(genreId);
+                                genreRepository.save(newGenre);
+                                GenreDTO newGenreDTO = genreMapper.entityToDto(newGenre);
+                                genresDTOs.add(newGenreDTO);
+                            }
+                        }
+                        movieDTO.setGenreDTOs(genresDTOs);
+
+                        movieDTOs.add(movieDTO);
+                    }
+                }
+            }
+        }
+
+        if (!movieDTOs.isEmpty()) {
             List<Content> movies = new ArrayList<>();
             for (ContentMovieDTO movieDTO : movieDTOs) {
+                // Check existing movie before adding
                 Content existingMovie = contentRepository.findByReleaseDateAndTitle(movieDTO.getRelease_date(),
                         movieDTO.getTitle());
                 if (existingMovie == null) {
@@ -123,6 +168,7 @@ public class TMDBService {
             }
 
             contentRepository.saveAll(movies);
+
         }
     }
 

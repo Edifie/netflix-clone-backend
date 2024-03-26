@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.dt.netflixclonebackend.service.TMDBService;
 
+import reactor.core.publisher.Mono;
+
 @RestController
 @RequestMapping(value = "/tmdb/")
 public class TMDBController {
@@ -21,13 +23,10 @@ public class TMDBController {
         this.tmdbService = tmdbService;
     }
 
-    @GetMapping("movie/all")
-    public ResponseEntity<?> getFetchedMoviesFromTMDB() {
-        for (int i = 1; i <= 25; i++) {
-            tmdbService.getMoviesFromTMDBAndSave("/movie/popular?language=en-US&page=" + i);
-            tmdbService.getMoviesFromTMDBAndSave("/movie/top_rated?language=en-US&page=" + i);
-        }
-        return ResponseEntity.status(HttpStatus.OK).body("Movies fetched and saved successfully");
+    @GetMapping("/movie/all")
+    public Mono<ResponseEntity<String>> getFetchedMoviesFromTMDB() {
+        return tmdbService.getMoviesFromTMDBAndSave()
+                .then(Mono.just(ResponseEntity.ok().body("Movies fetched and saved successfully")));
     }
 
     @GetMapping("genre/all")
