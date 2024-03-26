@@ -9,4 +9,5 @@ import com.dt.netflixclonebackend.domain.Content;
 public interface ContentRepository extends JpaRepository<Content, Long> {
 
     Content findByReleaseDateAndTitle(LocalDate releaseDate, String title);
+
 }
