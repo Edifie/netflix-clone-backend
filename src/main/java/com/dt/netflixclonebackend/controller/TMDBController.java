@@ -29,6 +29,14 @@ public class TMDBController {
                 .then(Mono.just(ResponseEntity.ok().body("Movies fetched and saved successfully")));
     }
 
+    @GetMapping("/images/all")
+    public ResponseEntity<?> getFetchedImagesFromTMDB() {
+        tmdbService.generateEndpointsForImages();
+
+        return ResponseEntity.status(HttpStatus.OK).body("Images fetched and saved successfully");
+
+    }
+
     @GetMapping("genre/all")
     public ResponseEntity<?> getFetchedGenresFromTMDB() {
         tmdbService.getGenresFromTMDBAndSave();

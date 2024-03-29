@@ -218,4 +218,61 @@ public class TMDBService {
             genreRepository.saveAll(genres);
         }
     }
+
+    // --------- IMAGES ---------
+    public void generateEndpointsForImages() {
+        List<Content> allContents = contentRepository.findAllByFilePathIsNull();
+
+        for (Content content : allContents) {
+
+            String endpoint = "/movie/" + content.getContentId() + "/images";
+            getImagesForContents(endpoint, content.getContentId());
+        }
+
+    }
+
+    public void getImagesForContents(String endpoint, Long contentId) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(accessTokenAuth);
+
+        webClient.get()
+                .uri(endpoint)
+                .headers(httpHeaders -> httpHeaders.addAll(headers))
+                .retrieve()
+                .bodyToFlux(String.class)
+                .flatMap(response -> {
+                    try {
+                        ObjectMapper objectMapper = new ObjectMapper();
+                        JsonNode jsonNode = objectMapper.readTree(response);
+
+                        JsonNode backdrops = jsonNode.get("backdrops");
+
+                        String filePath;
+                        if (!backdrops.isEmpty()) {
+                            filePath = backdrops.get(0).get("file_path").asText();
+                        } else {
+                            JsonNode posters = jsonNode.get("posters").get(0);
+                            filePath = posters.get("file_path").asText();
+                        }
+
+                        TMDBMovieDTO movieDTO = new TMDBMovieDTO();
+                        movieDTO.setFile_path(filePath);
+
+                        if (movieDTO != null) {
+
+                            Content content = contentRepository.findByContentId(contentId);
+                            // Check later how to map one field without modifying existing content
+                            String originalFilePath = "https://image.tmdb.org/t/p/w500" + filePath;
+                            content.setFilePath(originalFilePath);
+                            contentRepository.save(content);
+                        }
+
+                        return Flux.just(movieDTO);
+                    } catch (Exception e) {
+                        return Flux.error(e);
+                    }
+                })
+                .blockFirst();
+    }
+
 }

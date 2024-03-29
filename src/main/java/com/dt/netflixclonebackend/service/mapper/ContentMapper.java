@@ -3,6 +3,7 @@ package com.dt.netflixclonebackend.service.mapper;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -22,9 +23,14 @@ public interface ContentMapper {
     @Mapping(target = "description", source = "overview")
     @Mapping(target = "releaseDate", source = "release_date")
     @Mapping(target = "contentId", source = "movie_id")
-    @Mapping(target = "filePath", source = "file_path")
     @Mapping(target = "genres", source = "genreDTOs")
+    @Mapping(target = "filePath", source = "file_path")
     Content movieDtoToContent(TMDBMovieDTO dto);
+
+    // Check later !!
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "filePath", source = "file_path")
+    Content ligtMovieDtoToContentOnlyImage(TMDBMovieDTO dto);
 
     @Mapping(target = "title", source = "title")
     @Mapping(target = "description", source = "description")
