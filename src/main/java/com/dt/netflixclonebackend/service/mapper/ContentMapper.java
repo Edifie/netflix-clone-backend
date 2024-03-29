@@ -24,12 +24,12 @@ public interface ContentMapper {
     @Mapping(target = "releaseDate", source = "release_date")
     @Mapping(target = "contentId", source = "movie_id")
     @Mapping(target = "genres", source = "genreDTOs")
-    @Mapping(target = "filePath", source = "file_path")
+    @Mapping(target = "imageUrl", source = "file_path")
     Content movieDtoToContent(TMDBMovieDTO dto);
 
     // Check later !!
     @BeanMapping(ignoreByDefault = true)
-    @Mapping(target = "filePath", source = "file_path")
+    @Mapping(target = "imageUrl", source = "file_path")
     Content ligtMovieDtoToContentOnlyImage(TMDBMovieDTO dto);
 
     @Mapping(target = "title", source = "title")

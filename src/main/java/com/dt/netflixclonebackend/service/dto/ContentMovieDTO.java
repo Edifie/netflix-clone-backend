@@ -9,6 +9,7 @@ public class ContentMovieDTO {
     private String title;
     private String description;
     private LocalDate releaseDate;
+    private String imageUrl;
     private List<GenreDTO> genreDTOs;
 
     public ContentMovieDTO() {
@@ -54,6 +55,14 @@ public class ContentMovieDTO {
         this.genreDTOs = genreDTOs;
     }
 
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -62,6 +71,7 @@ public class ContentMovieDTO {
         result = prime * result + ((title == null) ? 0 : title.hashCode());
         result = prime * result + ((description == null) ? 0 : description.hashCode());
         result = prime * result + ((releaseDate == null) ? 0 : releaseDate.hashCode());
+        result = prime * result + ((imageUrl == null) ? 0 : imageUrl.hashCode());
         result = prime * result + ((genreDTOs == null) ? 0 : genreDTOs.hashCode());
         return result;
     }
@@ -95,6 +105,11 @@ public class ContentMovieDTO {
                 return false;
         } else if (!releaseDate.equals(other.releaseDate))
             return false;
+        if (imageUrl == null) {
+            if (other.imageUrl != null)
+                return false;
+        } else if (!imageUrl.equals(other.imageUrl))
+            return false;
         if (genreDTOs == null) {
             if (other.genreDTOs != null)
                 return false;
@@ -106,7 +121,7 @@ public class ContentMovieDTO {
     @Override
     public String toString() {
         return "ContentMovieDTO [id=" + id + ", title=" + title + ", description=" + description + ", releaseDate="
-                + releaseDate + ", genreDTOs=" + genreDTOs + "]";
+                + releaseDate + ", imageUrl=" + imageUrl + ", genreDTOs=" + genreDTOs + "]";
     }
 
 }

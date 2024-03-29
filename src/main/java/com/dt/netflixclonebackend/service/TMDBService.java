@@ -263,7 +263,7 @@ public class TMDBService {
                             Content content = contentRepository.findByContentId(contentId);
                             // Check later how to map one field without modifying existing content
                             String originalFilePath = "https://image.tmdb.org/t/p/w500" + filePath;
-                            content.setFilePath(originalFilePath);
+                            content.setImageUrl(originalFilePath);
                             contentRepository.save(content);
                         }
 
