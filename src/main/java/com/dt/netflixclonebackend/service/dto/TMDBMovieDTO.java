@@ -9,6 +9,7 @@ public class TMDBMovieDTO {
     private String title;
     private String overview;
     private LocalDate release_date;
+    private String file_path;
     private List<GenreDTO> genreDTOs;
 
     public TMDBMovieDTO() {
@@ -20,6 +21,14 @@ public class TMDBMovieDTO {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getFile_path() {
+        return file_path;
+    }
+
+    public void setFile_path(String file_path) {
+        this.file_path = file_path;
     }
 
     public String getOverview() {
@@ -62,6 +71,7 @@ public class TMDBMovieDTO {
         result = prime * result + ((title == null) ? 0 : title.hashCode());
         result = prime * result + ((overview == null) ? 0 : overview.hashCode());
         result = prime * result + ((release_date == null) ? 0 : release_date.hashCode());
+        result = prime * result + ((file_path == null) ? 0 : file_path.hashCode());
         result = prime * result + ((genreDTOs == null) ? 0 : genreDTOs.hashCode());
         return result;
     }
@@ -95,6 +105,11 @@ public class TMDBMovieDTO {
                 return false;
         } else if (!release_date.equals(other.release_date))
             return false;
+        if (file_path == null) {
+            if (other.file_path != null)
+                return false;
+        } else if (!file_path.equals(other.file_path))
+            return false;
         if (genreDTOs == null) {
             if (other.genreDTOs != null)
                 return false;
@@ -106,7 +121,7 @@ public class TMDBMovieDTO {
     @Override
     public String toString() {
         return "TMDBMovieDTO [movie_id=" + movie_id + ", title=" + title + ", overview=" + overview + ", release_date="
-                + release_date + ", genreDTOs=" + genreDTOs + "]";
+                + release_date + ", file_path=" + file_path + ", genreDTOs=" + genreDTOs + "]";
     }
 
 }

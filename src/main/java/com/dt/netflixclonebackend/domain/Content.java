@@ -45,6 +45,8 @@ public class Content implements Serializable {
 
     private double duration;
 
+    private String filePath;
+
     @ManyToMany
     private List<Genre> genres;
 
@@ -56,14 +58,15 @@ public class Content implements Serializable {
     }
 
     public Content(@NotNull Long contentId, @NotNull String title, @NotNull ContentType contentType,
-            @NotNull String description, @NotNull LocalDate releaseDate, double duration, List<Genre> genres,
-            Watchlist watchlist) {
+            @NotNull String description, @NotNull LocalDate releaseDate, double duration, String filePath,
+            List<Genre> genres, Watchlist watchlist) {
         this.contentId = contentId;
         this.title = title;
         this.contentType = contentType;
         this.description = description;
         this.releaseDate = releaseDate;
         this.duration = duration;
+        this.filePath = filePath;
         this.genres = genres;
         this.watchlist = watchlist;
     }
@@ -99,6 +102,14 @@ public class Content implements Serializable {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 
     public ContentType getContentType() {
@@ -154,6 +165,7 @@ public class Content implements Serializable {
         long temp;
         temp = Double.doubleToLongBits(duration);
         result = prime * result + (int) (temp ^ (temp >>> 32));
+        result = prime * result + ((filePath == null) ? 0 : filePath.hashCode());
         result = prime * result + ((genres == null) ? 0 : genres.hashCode());
         result = prime * result + ((watchlist == null) ? 0 : watchlist.hashCode());
         return result;
@@ -197,6 +209,11 @@ public class Content implements Serializable {
             return false;
         if (Double.doubleToLongBits(duration) != Double.doubleToLongBits(other.duration))
             return false;
+        if (filePath == null) {
+            if (other.filePath != null)
+                return false;
+        } else if (!filePath.equals(other.filePath))
+            return false;
         if (genres == null) {
             if (other.genres != null)
                 return false;
@@ -214,7 +231,7 @@ public class Content implements Serializable {
     public String toString() {
         return "Content [id=" + id + ", contentId=" + contentId + ", title=" + title + ", contentType=" + contentType
                 + ", description=" + description + ", releaseDate=" + releaseDate + ", duration=" + duration
-                + ", genres=" + genres + ", watchlist=" + watchlist + "]";
+                + ", filePath=" + filePath + ", genres=" + genres + ", watchlist=" + watchlist + "]";
     }
 
 }

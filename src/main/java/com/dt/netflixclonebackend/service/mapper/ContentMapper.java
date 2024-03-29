@@ -22,6 +22,7 @@ public interface ContentMapper {
     @Mapping(target = "description", source = "overview")
     @Mapping(target = "releaseDate", source = "release_date")
     @Mapping(target = "contentId", source = "movie_id")
+    @Mapping(target = "filePath", source = "file_path")
     @Mapping(target = "genres", source = "genreDTOs")
     Content movieDtoToContent(TMDBMovieDTO dto);
 
