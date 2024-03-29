@@ -13,6 +13,6 @@ public interface ContentRepository extends JpaRepository<Content, Long> {
 
     Content findByContentId(Long contentId);
 
-    List<Content> findAllByFilePathIsNull();
+    List<Content> findAllByImageUrlIsNull();
 
 }

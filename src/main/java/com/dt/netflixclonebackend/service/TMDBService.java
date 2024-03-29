@@ -114,6 +114,9 @@ public class TMDBService {
                     String title = movieNode.get("title").asText();
                     String releaseDateText = movieNode.get("release_date").asText();
                     LocalDate releaseDate = LocalDate.parse(releaseDateText);
+                    String overview = movieNode.get("overview").asText();
+                    Long movieId = movieNode.get("id").asLong();
+                    String filePath = movieNode.get("poster_path").asText();
 
                     // Check if the movie already exists in movieDTOs to avoid duplicates in the
                     // JSON response
@@ -124,9 +127,12 @@ public class TMDBService {
                     if (!movieExists) {
                         TMDBMovieDTO movieDTO = new TMDBMovieDTO();
                         movieDTO.setTitle(title);
-                        movieDTO.setOverview(movieNode.get("overview").asText());
+                        movieDTO.setOverview(overview);
                         movieDTO.setRelease_date(releaseDate);
-                        movieDTO.setMovie_id(movieNode.get("id").asLong());
+                        movieDTO.setMovie_id(movieId);
+
+                        String originalFilePath = "https://image.tmdb.org/t/p/w500" + filePath;
+                        movieDTO.setFile_path(originalFilePath);
 
                         // Set genre DTOs
                         List<Long> genreIds = new ArrayList<>();
@@ -221,7 +227,7 @@ public class TMDBService {
 
     // --------- IMAGES ---------
     public void generateEndpointsForImages() {
-        List<Content> allContents = contentRepository.findAllByFilePathIsNull();
+        List<Content> allContents = contentRepository.findAllByImageUrlIsNull();
 
         for (Content content : allContents) {
 
