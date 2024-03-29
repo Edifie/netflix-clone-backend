@@ -52,6 +52,7 @@ public class TMDBService {
         this.genreRepository = genreRepository;
     }
 
+    // --------- MOVIES ---------
     public Mono<List<JsonNode>> getMoviesFromTMDB(String endpoint) {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(accessTokenAuth);
@@ -125,6 +126,7 @@ public class TMDBService {
                         movieDTO.setTitle(title);
                         movieDTO.setOverview(movieNode.get("overview").asText());
                         movieDTO.setRelease_date(releaseDate);
+                        movieDTO.setMovie_id(movieNode.get("id").asLong());
 
                         // Set genre DTOs
                         List<Long> genreIds = new ArrayList<>();
@@ -172,6 +174,7 @@ public class TMDBService {
         }
     }
 
+    // --------- GENRES ---------
     public void getGenresFromTMDBAndSave() {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(accessTokenAuth);

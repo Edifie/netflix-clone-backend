@@ -5,6 +5,7 @@ import java.util.List;
 
 public class TMDBMovieDTO {
 
+    private Long movie_id;
     private String title;
     private String overview;
     private LocalDate release_date;
@@ -45,10 +46,19 @@ public class TMDBMovieDTO {
         this.genreDTOs = genreDTOs;
     }
 
+    public Long getMovie_id() {
+        return movie_id;
+    }
+
+    public void setMovie_id(Long movie_id) {
+        this.movie_id = movie_id;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
+        result = prime * result + ((movie_id == null) ? 0 : movie_id.hashCode());
         result = prime * result + ((title == null) ? 0 : title.hashCode());
         result = prime * result + ((overview == null) ? 0 : overview.hashCode());
         result = prime * result + ((release_date == null) ? 0 : release_date.hashCode());
@@ -65,6 +75,11 @@ public class TMDBMovieDTO {
         if (getClass() != obj.getClass())
             return false;
         TMDBMovieDTO other = (TMDBMovieDTO) obj;
+        if (movie_id == null) {
+            if (other.movie_id != null)
+                return false;
+        } else if (!movie_id.equals(other.movie_id))
+            return false;
         if (title == null) {
             if (other.title != null)
                 return false;
@@ -90,8 +105,8 @@ public class TMDBMovieDTO {
 
     @Override
     public String toString() {
-        return "TMDBMovieDTO [title=" + title + ", overview=" + overview + ", release_date=" + release_date
-                + ", genreDTOs=" + genreDTOs + "]";
+        return "TMDBMovieDTO [movie_id=" + movie_id + ", title=" + title + ", overview=" + overview + ", release_date="
+                + release_date + ", genreDTOs=" + genreDTOs + "]";
     }
 
 }
