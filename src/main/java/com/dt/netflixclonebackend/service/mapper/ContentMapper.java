@@ -36,7 +36,7 @@ public interface ContentMapper {
     @Mapping(target = "description", source = "description")
     @Mapping(target = "releaseDate", source = "releaseDate")
     @Mapping(target = "contentType", source = "contentType")
-    @Mapping(target = "genreDTOs", expression = "java(mapGenres(entity.getGenres()))")
+    @Mapping(target = "genres", expression = "java(mapGenres(entity.getGenres()))")
     ContentMovieDTO lightMovieEntityToDto(Content entity);
 
     default List<GenreDTO> mapGenres(List<Genre> genres) {

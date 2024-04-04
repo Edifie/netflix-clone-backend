@@ -13,7 +13,7 @@ public class ContentMovieDTO {
     private LocalDate releaseDate;
     private String imageUrl;
     private ContentType contentType;
-    private List<GenreDTO> genreDTOs;
+    private List<GenreDTO> genres;
 
     public ContentMovieDTO() {
     }
@@ -50,14 +50,6 @@ public class ContentMovieDTO {
         this.releaseDate = releaseDate;
     }
 
-    public List<GenreDTO> getGenreDTOs() {
-        return genreDTOs;
-    }
-
-    public void setGenreDTOs(List<GenreDTO> genreDTOs) {
-        this.genreDTOs = genreDTOs;
-    }
-
     public String getImageUrl() {
         return imageUrl;
     }
@@ -74,6 +66,14 @@ public class ContentMovieDTO {
         this.contentType = contentType;
     }
 
+    public List<GenreDTO> getGenres() {
+        return genres;
+    }
+
+    public void setGenres(List<GenreDTO> genres) {
+        this.genres = genres;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -84,7 +84,7 @@ public class ContentMovieDTO {
         result = prime * result + ((releaseDate == null) ? 0 : releaseDate.hashCode());
         result = prime * result + ((imageUrl == null) ? 0 : imageUrl.hashCode());
         result = prime * result + ((contentType == null) ? 0 : contentType.hashCode());
-        result = prime * result + ((genreDTOs == null) ? 0 : genreDTOs.hashCode());
+        result = prime * result + ((genres == null) ? 0 : genres.hashCode());
         return result;
     }
 
@@ -124,10 +124,10 @@ public class ContentMovieDTO {
             return false;
         if (contentType != other.contentType)
             return false;
-        if (genreDTOs == null) {
-            if (other.genreDTOs != null)
+        if (genres == null) {
+            if (other.genres != null)
                 return false;
-        } else if (!genreDTOs.equals(other.genreDTOs))
+        } else if (!genres.equals(other.genres))
             return false;
         return true;
     }
@@ -135,8 +135,7 @@ public class ContentMovieDTO {
     @Override
     public String toString() {
         return "ContentMovieDTO [id=" + id + ", title=" + title + ", description=" + description + ", releaseDate="
-                + releaseDate + ", imageUrl=" + imageUrl + ", contentType=" + contentType + ", genreDTOs=" + genreDTOs
-                + "]";
+                + releaseDate + ", imageUrl=" + imageUrl + ", contentType=" + contentType + ", genres=" + genres + "]";
     }
 
 }
