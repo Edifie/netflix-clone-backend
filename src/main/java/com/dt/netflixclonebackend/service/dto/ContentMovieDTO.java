@@ -3,6 +3,8 @@ package com.dt.netflixclonebackend.service.dto;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.dt.netflixclonebackend.domain.enums.ContentType;
+
 public class ContentMovieDTO {
 
     private Long id;
@@ -10,6 +12,7 @@ public class ContentMovieDTO {
     private String description;
     private LocalDate releaseDate;
     private String imageUrl;
+    private ContentType contentType;
     private List<GenreDTO> genreDTOs;
 
     public ContentMovieDTO() {
@@ -63,6 +66,14 @@ public class ContentMovieDTO {
         this.imageUrl = imageUrl;
     }
 
+    public ContentType getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(ContentType contentType) {
+        this.contentType = contentType;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -72,6 +83,7 @@ public class ContentMovieDTO {
         result = prime * result + ((description == null) ? 0 : description.hashCode());
         result = prime * result + ((releaseDate == null) ? 0 : releaseDate.hashCode());
         result = prime * result + ((imageUrl == null) ? 0 : imageUrl.hashCode());
+        result = prime * result + ((contentType == null) ? 0 : contentType.hashCode());
         result = prime * result + ((genreDTOs == null) ? 0 : genreDTOs.hashCode());
         return result;
     }
@@ -110,6 +122,8 @@ public class ContentMovieDTO {
                 return false;
         } else if (!imageUrl.equals(other.imageUrl))
             return false;
+        if (contentType != other.contentType)
+            return false;
         if (genreDTOs == null) {
             if (other.genreDTOs != null)
                 return false;
@@ -121,7 +135,8 @@ public class ContentMovieDTO {
     @Override
     public String toString() {
         return "ContentMovieDTO [id=" + id + ", title=" + title + ", description=" + description + ", releaseDate="
-                + releaseDate + ", imageUrl=" + imageUrl + ", genreDTOs=" + genreDTOs + "]";
+                + releaseDate + ", imageUrl=" + imageUrl + ", contentType=" + contentType + ", genreDTOs=" + genreDTOs
+                + "]";
     }
 
 }
